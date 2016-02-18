@@ -1,0 +1,18 @@
+<script>
+function uin2hex(str) 
+{
+            var maxLength = 16;
+            str = parseInt(str);
+            for (var hex = str.toString(16), len = hex.length, i = len; maxLength > i; i++)
+            {    hex = "0" + hex;
+                
+            }
+            for (var arr = [], j = 0; maxLength > j; j += 2)
+                arr.push("\\x" + hex.substr(j, 2));
+            var result = arr.join("");
+            
+            return eval('result="' + result + '"'),
+            result
+}
+</script>
+alert(uin2hex("login"));
