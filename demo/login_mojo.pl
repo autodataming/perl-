@@ -101,7 +101,7 @@ elsif($parameters[0]==0)
 #        3-15-1455712874784
      $i=$parameters[1];          #'!QMD';
    
-     my $command="node encryption.js $t   $e $i";
+     my $command="node encryption.js $t  $e $i";
      print $command,"   command\n";
    #  system($command);
 
