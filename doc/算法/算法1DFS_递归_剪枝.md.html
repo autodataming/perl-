@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8" />
+      <title>算法1DFS_递归_剪枝</title>
+      <style>.markdown-preview:not([data-use-github-style]) { padding: 2em; font-size: 0.92 em; color: rgb(101, 123, 131); overflow: auto; background-color: rgb(253, 246, 227); }
+.markdown-preview:not([data-use-github-style]) > :first-child { margin-top: 0px; }
+.markdown-preview:not([data-use-github-style]) h1, .markdown-preview:not([data-use-github-style]) h2, .markdown-preview:not([data-use-github-style]) h3, .markdown-preview:not([data-use-github-style]) h4, .markdown-preview:not([data-use-github-style]) h5, .markdown-preview:not([data-use-github-style]) h6 { line-height: 1.2; margin-top: 1.5em; margin-bottom: 0.5em; color: rgb(30, 36, 39); }
+.markdown-preview:not([data-use-github-style]) h1 { font-size: 2.4em; font-weight: 300; }
+.markdown-preview:not([data-use-github-style]) h2 { font-size: 1.8em; font-weight: 400; }
+.markdown-preview:not([data-use-github-style]) h3 { font-size: 1.5em; font-weight: 500; }
+.markdown-preview:not([data-use-github-style]) h4 { font-size: 1.2em; font-weight: 600; }
+.markdown-preview:not([data-use-github-style]) h5 { font-size: 1.1em; font-weight: 600; }
+.markdown-preview:not([data-use-github-style]) h6 { font-size: 1em; font-weight: 600; }
+.markdown-preview:not([data-use-github-style]) strong { color: rgb(30, 36, 39); }
+.markdown-preview:not([data-use-github-style]) del { color: rgb(144, 163, 169); }
+.markdown-preview:not([data-use-github-style]) a, .markdown-preview:not([data-use-github-style]) a code { color: rgb(0, 43, 54); }
+.markdown-preview:not([data-use-github-style]) img { max-width: 100%; }
+.markdown-preview:not([data-use-github-style]) > p { margin-top: 0px; margin-bottom: 1.5em; }
+.markdown-preview:not([data-use-github-style]) > ul, .markdown-preview:not([data-use-github-style]) > ol { margin-bottom: 1.5em; }
+.markdown-preview:not([data-use-github-style]) blockquote { margin: 1.5em 0px; font-size: inherit; color: rgb(144, 163, 169); border-color: rgb(248, 222, 151); border-width: 4px; }
+.markdown-preview:not([data-use-github-style]) hr { margin: 3em 0px; border-top-width: 2px; border-top-style: dashed; border-top-color: rgb(248, 222, 151); background: none; }
+.markdown-preview:not([data-use-github-style]) table { margin: 1.5em 0px; }
+.markdown-preview:not([data-use-github-style]) th { color: rgb(30, 36, 39); }
+.markdown-preview:not([data-use-github-style]) th, .markdown-preview:not([data-use-github-style]) td { padding: 0.66em 1em; border: 1px solid rgb(248, 222, 151); }
+.markdown-preview:not([data-use-github-style]) code { color: rgb(30, 36, 39); background-color: rgb(251, 237, 198); }
+.markdown-preview:not([data-use-github-style]) pre.editor-colors { margin: 1.5em 0px; padding: 1em; font-size: 0.92em; border-radius: 3px; background-color: rgb(252, 240, 208); }
+.markdown-preview:not([data-use-github-style]) kbd { color: rgb(30, 36, 39); border-width: 1px 1px 2px; border-style: solid; border-color: rgb(248, 222, 151) rgb(248, 222, 151) rgb(246, 212, 122); background-color: rgb(251, 237, 198); }
+.markdown-preview[data-use-github-style] { font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; line-height: 1.6; word-wrap: break-word; padding: 30px; font-size: 16px; color: rgb(51, 51, 51); overflow: scroll; background-color: rgb(255, 255, 255); }
+.markdown-preview[data-use-github-style] > :first-child { margin-top: 0px !important; }
+.markdown-preview[data-use-github-style] > :last-child { margin-bottom: 0px !important; }
+.markdown-preview[data-use-github-style] a:not([href]) { color: inherit; text-decoration: none; }
+.markdown-preview[data-use-github-style] .absent { color: rgb(204, 0, 0); }
+.markdown-preview[data-use-github-style] .anchor { position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; }
+.markdown-preview[data-use-github-style] .anchor:focus { outline: none; }
+.markdown-preview[data-use-github-style] h1, .markdown-preview[data-use-github-style] h2, .markdown-preview[data-use-github-style] h3, .markdown-preview[data-use-github-style] h4, .markdown-preview[data-use-github-style] h5, .markdown-preview[data-use-github-style] h6 { position: relative; margin-top: 1em; margin-bottom: 16px; font-weight: bold; line-height: 1.4; }
+.markdown-preview[data-use-github-style] h1 .octicon-link, .markdown-preview[data-use-github-style] h2 .octicon-link, .markdown-preview[data-use-github-style] h3 .octicon-link, .markdown-preview[data-use-github-style] h4 .octicon-link, .markdown-preview[data-use-github-style] h5 .octicon-link, .markdown-preview[data-use-github-style] h6 .octicon-link { display: none; color: rgb(0, 0, 0); vertical-align: middle; }
+.markdown-preview[data-use-github-style] h1:hover .anchor, .markdown-preview[data-use-github-style] h2:hover .anchor, .markdown-preview[data-use-github-style] h3:hover .anchor, .markdown-preview[data-use-github-style] h4:hover .anchor, .markdown-preview[data-use-github-style] h5:hover .anchor, .markdown-preview[data-use-github-style] h6:hover .anchor { padding-left: 8px; margin-left: -30px; text-decoration: none; }
+.markdown-preview[data-use-github-style] h1:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h2:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h3:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h4:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h5:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h6:hover .anchor .octicon-link { display: inline-block; }
+.markdown-preview[data-use-github-style] h1 tt, .markdown-preview[data-use-github-style] h2 tt, .markdown-preview[data-use-github-style] h3 tt, .markdown-preview[data-use-github-style] h4 tt, .markdown-preview[data-use-github-style] h5 tt, .markdown-preview[data-use-github-style] h6 tt, .markdown-preview[data-use-github-style] h1 code, .markdown-preview[data-use-github-style] h2 code, .markdown-preview[data-use-github-style] h3 code, .markdown-preview[data-use-github-style] h4 code, .markdown-preview[data-use-github-style] h5 code, .markdown-preview[data-use-github-style] h6 code { font-size: inherit; }
+.markdown-preview[data-use-github-style] h1 { padding-bottom: 0.3em; font-size: 2.25em; line-height: 1.2; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); }
+.markdown-preview[data-use-github-style] h1 .anchor { line-height: 1; }
+.markdown-preview[data-use-github-style] h2 { padding-bottom: 0.3em; font-size: 1.75em; line-height: 1.225; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); }
+.markdown-preview[data-use-github-style] h2 .anchor { line-height: 1; }
+.markdown-preview[data-use-github-style] h3 { font-size: 1.5em; line-height: 1.43; }
+.markdown-preview[data-use-github-style] h3 .anchor { line-height: 1.2; }
+.markdown-preview[data-use-github-style] h4 { font-size: 1.25em; }
+.markdown-preview[data-use-github-style] h4 .anchor { line-height: 1.2; }
+.markdown-preview[data-use-github-style] h5 { font-size: 1em; }
+.markdown-preview[data-use-github-style] h5 .anchor { line-height: 1.1; }
+.markdown-preview[data-use-github-style] h6 { font-size: 1em; color: rgb(119, 119, 119); }
+.markdown-preview[data-use-github-style] h6 .anchor { line-height: 1.1; }
+.markdown-preview[data-use-github-style] p, .markdown-preview[data-use-github-style] blockquote, .markdown-preview[data-use-github-style] ul, .markdown-preview[data-use-github-style] ol, .markdown-preview[data-use-github-style] dl, .markdown-preview[data-use-github-style] table, .markdown-preview[data-use-github-style] pre { margin-top: 0px; margin-bottom: 16px; }
+.markdown-preview[data-use-github-style] hr { height: 4px; padding: 0px; margin: 16px 0px; border: 0px none; background-color: rgb(231, 231, 231); }
+.markdown-preview[data-use-github-style] ul, .markdown-preview[data-use-github-style] ol { padding-left: 2em; }
+.markdown-preview[data-use-github-style] ul.no-list, .markdown-preview[data-use-github-style] ol.no-list { padding: 0px; list-style-type: none; }
+.markdown-preview[data-use-github-style] ul ul, .markdown-preview[data-use-github-style] ul ol, .markdown-preview[data-use-github-style] ol ol, .markdown-preview[data-use-github-style] ol ul { margin-top: 0px; margin-bottom: 0px; }
+.markdown-preview[data-use-github-style] li > p { margin-top: 16px; }
+.markdown-preview[data-use-github-style] dl { padding: 0px; }
+.markdown-preview[data-use-github-style] dl dt { padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold; }
+.markdown-preview[data-use-github-style] dl dd { padding: 0px 16px; margin-bottom: 16px; }
+.markdown-preview[data-use-github-style] blockquote { padding: 0px 15px; color: rgb(119, 119, 119); border-left-width: 4px; border-left-style: solid; border-left-color: rgb(221, 221, 221); }
+.markdown-preview[data-use-github-style] blockquote > :first-child { margin-top: 0px; }
+.markdown-preview[data-use-github-style] blockquote > :last-child { margin-bottom: 0px; }
+.markdown-preview[data-use-github-style] table { display: block; width: 100%; overflow: auto; word-break: keep-all; }
+.markdown-preview[data-use-github-style] table th { font-weight: bold; }
+.markdown-preview[data-use-github-style] table th, .markdown-preview[data-use-github-style] table td { padding: 6px 13px; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview[data-use-github-style] table tr { border-top-width: 1px; border-top-style: solid; border-top-color: rgb(204, 204, 204); background-color: rgb(255, 255, 255); }
+.markdown-preview[data-use-github-style] table tr:nth-child(2n) { background-color: rgb(248, 248, 248); }
+.markdown-preview[data-use-github-style] img { max-width: 100%; box-sizing: border-box; }
+.markdown-preview[data-use-github-style] .emoji { max-width: none; }
+.markdown-preview[data-use-github-style] span.frame { display: block; overflow: hidden; }
+.markdown-preview[data-use-github-style] span.frame > span { display: block; float: left; width: auto; padding: 7px; margin: 13px 0px 0px; overflow: hidden; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview[data-use-github-style] span.frame span img { display: block; float: left; }
+.markdown-preview[data-use-github-style] span.frame span span { display: block; padding: 5px 0px 0px; clear: both; color: rgb(51, 51, 51); }
+.markdown-preview[data-use-github-style] span.align-center { display: block; overflow: hidden; clear: both; }
+.markdown-preview[data-use-github-style] span.align-center > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: center; }
+.markdown-preview[data-use-github-style] span.align-center span img { margin: 0px auto; text-align: center; }
+.markdown-preview[data-use-github-style] span.align-right { display: block; overflow: hidden; clear: both; }
+.markdown-preview[data-use-github-style] span.align-right > span { display: block; margin: 13px 0px 0px; overflow: hidden; text-align: right; }
+.markdown-preview[data-use-github-style] span.align-right span img { margin: 0px; text-align: right; }
+.markdown-preview[data-use-github-style] span.float-left { display: block; float: left; margin-right: 13px; overflow: hidden; }
+.markdown-preview[data-use-github-style] span.float-left span { margin: 13px 0px 0px; }
+.markdown-preview[data-use-github-style] span.float-right { display: block; float: right; margin-left: 13px; overflow: hidden; }
+.markdown-preview[data-use-github-style] span.float-right > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: right; }
+.markdown-preview[data-use-github-style] code, .markdown-preview[data-use-github-style] tt { padding: 0.2em 0px; margin: 0px; font-size: 85%; border-radius: 3px; background-color: rgba(0, 0, 0, 0.0392157); }
+.markdown-preview[data-use-github-style] code::before, .markdown-preview[data-use-github-style] tt::before, .markdown-preview[data-use-github-style] code::after, .markdown-preview[data-use-github-style] tt::after { letter-spacing: -0.2em; content: " "; }
+.markdown-preview[data-use-github-style] code br, .markdown-preview[data-use-github-style] tt br { display: none; }
+.markdown-preview[data-use-github-style] del code { text-decoration: inherit; }
+.markdown-preview[data-use-github-style] pre > code { padding: 0px; margin: 0px; font-size: 100%; word-break: normal; white-space: pre; border: 0px; background: transparent; }
+.markdown-preview[data-use-github-style] .highlight { margin-bottom: 16px; }
+.markdown-preview[data-use-github-style] .highlight pre, .markdown-preview[data-use-github-style] pre { padding: 16px; overflow: auto; font-size: 85%; line-height: 1.45; border-radius: 3px; background-color: rgb(247, 247, 247); }
+.markdown-preview[data-use-github-style] .highlight pre { margin-bottom: 0px; word-break: normal; }
+.markdown-preview[data-use-github-style] pre { word-wrap: normal; }
+.markdown-preview[data-use-github-style] pre code, .markdown-preview[data-use-github-style] pre tt { display: inline; max-width: initial; padding: 0px; margin: 0px; overflow: initial; line-height: inherit; word-wrap: normal; border: 0px; background-color: transparent; }
+.markdown-preview[data-use-github-style] pre code::before, .markdown-preview[data-use-github-style] pre tt::before, .markdown-preview[data-use-github-style] pre code::after, .markdown-preview[data-use-github-style] pre tt::after { content: normal; }
+.markdown-preview[data-use-github-style] kbd { display: inline-block; padding: 3px 5px; font-size: 11px; line-height: 10px; color: rgb(85, 85, 85); vertical-align: middle; border-style: solid; border-width: 1px; border-color: rgb(204, 204, 204) rgb(204, 204, 204) rgb(187, 187, 187); border-radius: 3px; box-shadow: rgb(187, 187, 187) 0px -1px 0px inset; background-color: rgb(252, 252, 252); }
+.markdown-preview[data-use-github-style] a { color: rgb(51, 122, 183); }
+.markdown-preview[data-use-github-style] code { color: inherit; }
+.markdown-preview[data-use-github-style] pre.editor-colors { padding: 0.8em 1em; margin-bottom: 1em; font-size: 0.85em; border-radius: 4px; overflow: auto; }
+.scrollbars-visible-always .markdown-preview pre.editor-colors::shadow .vertical-scrollbar, .scrollbars-visible-always .markdown-preview pre.editor-colors::shadow .horizontal-scrollbar { visibility: hidden; }
+.scrollbars-visible-always .markdown-preview pre.editor-colors:hover::shadow .vertical-scrollbar, .scrollbars-visible-always .markdown-preview pre.editor-colors:hover::shadow .horizontal-scrollbar { visibility: visible; }
+.bracket-matcher .region {
+  border-bottom: 1px dotted lime;
+  position: absolute;
+}
+
+.spell-check-misspelling .region {
+  border-bottom: 2px dotted rgba(255, 51, 51, 0.75);
+}
+
+pre.editor-colors,
+.host {
+  color: #657b83;
+  background-color: #fdf6e3;
+}
+pre.editor-colors .gutter,
+.host .gutter {
+  color: #657b83;
+  background-color: #eee8d5;
+}
+pre.editor-colors .gutter .line-number.cursor-line,
+.host .gutter .line-number.cursor-line {
+  background-color: #e8e0c6;
+}
+pre.editor-colors .invisible-character,
+.host .invisible-character {
+  color: #dcd0a9;
+}
+pre.editor-colors .indent-guide,
+.host .indent-guide {
+  color: #dcd0a9;
+}
+pre.editor-colors .cursor,
+.host .cursor {
+  border-color: #002b36;
+}
+pre.editor-colors .selection .region,
+.host .selection .region {
+  background-color: #eee8d5;
+}
+pre.editor-colors .fold-marker:after,
+.host .fold-marker:after,
+pre.editor-colors .gutter .line-number.folded,
+.host .gutter .line-number.folded {
+  color: #d33682;
+}
+pre.editor-colors .bracket-matcher .region,
+.host .bracket-matcher .region {
+  border-color: #d33682;
+}
+.comment {
+  color: #93a1a1;
+  font-style: italic;
+}
+.string.quoted {
+  color: #2aa198;
+}
+.string.regexp {
+  color: #dc322f;
+}
+.constant.numeric {
+  color: #d33682;
+}
+.constant.language {
+  color: #b58900;
+}
+.constant.character,
+.constant.other {
+  color: #cb4b16;
+}
+.variable {
+  color: #268bd2;
+}
+.keyword {
+  color: #859900;
+}
+.storage {
+  color: #859900;
+}
+.entity.name.class,
+.entity.name.type,
+.entity.name.function {
+  color: #268bd2;
+}
+.entity.other.attribute-name {
+  color: #657b83;
+}
+.support.function {
+  color: #268bd2;
+}
+.support.function.builtin {
+  color: #859900;
+}
+.support.type,
+.support.class {
+  color: #859900;
+}
+.tag.entity.name {
+  color: #268bd2;
+}
+.tag.punctuation.definition.html,
+.tag.punctuation.definition.begin,
+.tag.punctuation.definition.end {
+  color: #93a1a1;
+}
+.invalid.deprecated {
+  color: #b58900;
+  text-decoration: underline;
+}
+.invalid.illegal {
+  color: #dc322f;
+  text-decoration: underline;
+}
+.none {
+  color: #657b83;
+}
+.source.c .meta.preprocessor,
+.source.c\+\+ .meta.preprocessor {
+  color: #dc322f;
+}
+.source.c .keyword.control.directive,
+.source.c\+\+ .keyword.control.directive {
+  color: #cb4b16;
+}
+.source.c .punctuation.string,
+.source.c\+\+ .punctuation.string {
+  color: #2aa198;
+}
+.source.c .constant,
+.source.c\+\+ .constant {
+  color: #cb4b16;
+}
+.source.c .constant.numeric,
+.source.c\+\+ .constant.numeric,
+.source.c .constant.language.c,
+.source.c\+\+ .constant.language.c {
+  color: #2aa198;
+}
+.source.c .storage,
+.source.c\+\+ .storage {
+  color: #b58900;
+}
+.source.c .entity,
+.source.c\+\+ .entity {
+  color: #657b83;
+}
+.source.c .entity.name.function.preprocessor,
+.source.c\+\+ .entity.name.function.preprocessor {
+  color: #dc322f;
+}
+.source.c .support.type,
+.source.c\+\+ .support.type {
+  color: #b58900;
+}
+.source.c .support.type.posix-reserved,
+.source.c\+\+ .support.type.posix-reserved {
+  color: #657b83;
+}
+.source.c .variable.other.dot-access,
+.source.c\+\+ .variable.other.dot-access {
+  color: #657b83;
+}
+.source.c .variable.parameter.preprocessor,
+.source.c\+\+ .variable.parameter.preprocessor {
+  color: #dc322f;
+}
+.source.coffee .support.class {
+  color: #859900;
+}
+.source.coffee .variable,
+.source.coffee .entity.name.function,
+.source.coffee .entity.name.class {
+  color: #268bd2;
+}
+.source.coffee .variable.parameter.function {
+  color: #657b83;
+}
+.source.coffee .variable.other.readwrite {
+  color: #859900;
+}
+.source.coffee .storage.type.function {
+  color: #859900;
+}
+.source.coffee .entity.name {
+  color: #657b83;
+}
+.source.coffee .meta.brace.round,
+.source.coffee .meta.brace.square {
+  color: #657b83;
+}
+.source.coffee .meta.delimiter {
+  color: #657b83;
+}
+.source.coffee .storage.type.class {
+  color: #859900;
+}
+.source.coffee .punctuation.terminator {
+  color: #657b83;
+}
+.source.coffee .punctuation.section.embedded {
+  color: #dc322f;
+}
+.source.coffee .constant.numeric {
+  color: #d33682;
+}
+.source.coffee .constant.language.boolean {
+  color: #b58900;
+}
+.source.css .punctuation.separator,
+.source.css .punctuation.terminator {
+  color: #657b83;
+}
+.source.css .punctuation.property-list.begin,
+.source.css .punctuation.property-list.end {
+  color: #dc322f;
+}
+.source.css .punctuation.section.function {
+  color: #2aa198;
+}
+.source.css .entity.name {
+  color: #859900;
+}
+.source.css .attribute-name.class,
+.source.css .id {
+  color: #268bd2;
+}
+.source.css .pseudo-element,
+.source.css .pseudo-class {
+  color: #cb4b16;
+}
+.source.css .property-value {
+  color: #2aa198;
+}
+.source.css .constant.numeric {
+  color: #2aa198;
+}
+.source.css .constant.numeric .unit {
+  color: #2aa198;
+}
+.source.css .rgb-value {
+  color: #2aa198;
+}
+.source.css .support.constant {
+  color: #2aa198;
+}
+.source.css .support.constant.media {
+  color: #dc322f;
+}
+.source.css .keyword.important {
+  color: #dc322f;
+}
+.source.less .keyword.unit,
+.source.scss .keyword.unit {
+  color: #2aa198;
+}
+.source.go .operator {
+  color: #657b83;
+}
+.source.go .operator.assignment {
+  color: #859900;
+}
+.source.java .keyword.operator {
+  color: #859900;
+}
+.source.java .keyword.import {
+  color: #cb4b16;
+}
+.source.java .storage.modifier.import {
+  color: #93a1a1;
+}
+.source.java .meta.class .storage.modifier {
+  color: #b58900;
+}
+.source.java .meta.class .meta.class.identifier .entity.name.type.class {
+  color: #268bd2;
+}
+.source.java .storage.type.primitive.array {
+  color: #859900;
+}
+.source.java .constant.numeric {
+  color: #d33682;
+}
+.source.java .constant.other {
+  color: #cb4b16;
+}
+.source.java .storage.type {
+  color: #859900;
+}
+.source.java .meta.method-call {
+  color: #dc322f;
+}
+.source.java .meta.method-call .meta.method {
+  color: #6c71c4;
+}
+.source.java .meta.method-call .punctuation.definition.seperator.parameter {
+  color: #859900;
+}
+.source.java .punctuation.definition.method-parameters {
+  color: #586e75;
+}
+.source.js .constant {
+  color: #859900;
+}
+.source.js .comma {
+  color: #657b83;
+}
+.source.js .support.class {
+  color: #859900;
+}
+.source.js .entity.name.type {
+  color: #b58900;
+}
+.source.js .entity.name {
+  color: #657b83;
+}
+.source.js .meta.brace {
+  color: #657b83;
+}
+.source.js .keyword {
+  color: #657b83;
+}
+.source.js .keyword.operator.new {
+  color: #859900;
+}
+.source.js .keyword.control {
+  color: #859900;
+}
+.source.js .keyword.control.regexp {
+  color: #2aa198;
+}
+.source.js .variable {
+  color: #268bd2;
+}
+.source.js .variable.parameter {
+  color: #657b83;
+}
+.source.js .regexp {
+  color: #2aa198;
+}
+.source.js .support.function {
+  color: #6c71c4;
+}
+.source.js .support.constant {
+  color: #657b83;
+}
+.source.js .constant.numeric {
+  color: #657b83;
+}
+.source.js .punctuation.terminator.statement {
+  color: #657b83;
+}
+.source.js .meta.delimiter.method.period {
+  color: #657b83;
+}
+.source.js .meta.brace.square {
+  color: #268bd2;
+}
+.source.js .meta.brace.curly {
+  color: #268bd2;
+}
+.source.js .string.quoted.template .embedded.source {
+  color: #657b83;
+}
+.source.js .string.quoted.template .embedded.source > .embedded.punctuation {
+  color: #dc322f;
+}
+.source.js.jsx .entity.name.tag {
+  color: #268bd2;
+}
+.gfm .link .entity {
+  color: #6c71c4;
+}
+.gfm .list.ordered {
+  color: #859900;
+}
+.gfm .list.unordered {
+  color: #b58900;
+}
+.gfm .raw {
+  font-style: italic;
+}
+.gfm.support {
+  color: #93a1a1;
+}
+.gfm.support.quote {
+  color: #6c71c4;
+}
+.markup.bold {
+  font-weight: bold;
+}
+.markup.italic {
+  font-style: italic;
+}
+.markup.heading {
+  color: #268bd2;
+}
+.markup.link {
+  color: #2aa198;
+}
+.markup.deleted {
+  color: #dc322f;
+}
+.markup.changed {
+  color: #b58900;
+}
+.markup.inserted {
+  color: #2aa198;
+}
+.source.php .storage.type.class {
+  color: #b58900;
+}
+.source.php .storage.type.function {
+  color: #cb4b16;
+}
+.source.php .storage.modifier {
+  color: #b58900;
+}
+.source.php .entity.name.type.class {
+  color: #657b83;
+}
+.source.php .entity.name.function {
+  color: #657b83;
+}
+.source.php .entity.other {
+  color: #657b83;
+}
+.source.php .variable {
+  color: #268bd2;
+}
+.source.php .punctuation.definition {
+  color: #657b83;
+}
+.source.php .punctuation.definition.comment {
+  color: #93a1a1;
+}
+.source.php .punctuation.definition.array {
+  color: #dc322f;
+}
+.source.php .punctuation.definition.string {
+  color: #657b83;
+}
+.source.php .punctuation.definition.variable {
+  color: #859900;
+}
+.source.php .support.function.construct {
+  color: #b58900;
+}
+.source.php .support.function.array {
+  color: #859900;
+}
+.source.php .keyword.operator.class {
+  color: #b58900;
+}
+.source.php .keyword.operator.assignment {
+  color: #859900;
+}
+.source.php .keyword.other {
+  color: #dc322f;
+}
+.source.python .entity {
+  color: #657b83;
+}
+.source.python .entity.name {
+  color: #268bd2;
+}
+.source.python .entity.other {
+  color: #268bd2;
+}
+.source.python .function {
+  color: #268bd2;
+}
+.source.python .function.magic {
+  color: #268bd2;
+}
+.source.python .punctuation.string {
+  color: #2aa198;
+}
+.source.python .keyword.operator {
+  color: #657b83;
+}
+.source.python .keyword.operator.quantifier {
+  color: #2aa198;
+}
+.source.python .keyword.operator.logical {
+  color: #859900;
+}
+.source.python .keyword.control.import {
+  color: #cb4b16;
+}
+.source.python .keyword.other {
+  color: #859900;
+}
+.source.python .constant.language {
+  color: #268bd2;
+}
+.source.python .constant.character {
+  color: #2aa198;
+}
+.source.python .constant.other {
+  color: #dc322f;
+}
+.source.python .entity.name.type.class {
+  color: #268bd2;
+}
+.source.python .variable {
+  color: #657b83;
+}
+.source.python .support.function.builtin {
+  color: #268bd2;
+}
+.source.python .support.type.exception.python {
+  color: #b58900;
+}
+.source.python .support.type.python {
+  color: #268bd2;
+}
+.source.python .storage.type.string {
+  color: #2aa198;
+}
+.source.python .storage.type.class {
+  color: #859900;
+}
+.source.python .storage.type.class.todo {
+  color: #d33682;
+}
+.source.python .storage.type.function {
+  color: #859900;
+}
+.source.python .punctuation.definition.parameters {
+  color: #657b83;
+}
+.source.python .punctuation.section.function.begin {
+  color: #657b83;
+}
+.source.python .punctuation.separator.parameters {
+  color: #657b83;
+}
+.source.ruby .meta.embedded .punctuation.section {
+  color: #dc322f;
+}
+.source.ruby .punctuation.definition {
+  color: #657b83;
+}
+.source.ruby .punctuation.definition.string {
+  color: #dc322f;
+}
+.source.ruby .punctuation.definition.comment {
+  color: #93a1a1;
+}
+.source.ruby .entity.inherited-class {
+  color: #b58900;
+}
+.source.ruby .variable.parameter {
+  color: #657b83;
+}
+.source.ruby .variable.constant {
+  color: #b58900;
+}
+.source.ruby .instance .punctuation.definition {
+  color: #268bd2;
+}
+.source.ruby .class {
+  color: #b58900;
+}
+.source.ruby .class.control {
+  color: #657b83;
+}
+.source.ruby .module {
+  color: #b58900;
+}
+.source.ruby .require .keyword.other.special-method {
+  color: #cb4b16;
+}
+.source.ruby .keyword.other.special-method {
+  color: #cb4b16;
+}
+.source.ruby .keyword.other {
+  color: #859900;
+}
+.source.ruby .keyword.control {
+  color: #859900;
+}
+.source.ruby .special-method {
+  color: #268bd2;
+}
+.source.ruby .symbol {
+  color: #2aa198;
+}
+.source.ruby .symbol .punctuation.definition {
+  color: #2aa198;
+}
+.source.ruby .hashkey {
+  color: #dc322f;
+}
+.source.ruby .hashkey .punctuation.definition {
+  color: #dc322f;
+}
+.source.ruby .string.regexp {
+  color: #dc322f;
+}
+.source.ruby .todo {
+  color: #d33682;
+}
+.source.ruby .variable.ruby.global {
+  color: #268bd2;
+}
+.source.ruby .variable.ruby.global .punctuation {
+  color: #268bd2;
+}
+.source.ruby .variable.block {
+  color: #268bd2;
+}
+.source.ruby .punctuation.separator {
+  color: #657b83;
+}
+.source.ruby .string.interpolated .embedded.line.ruby .punctuation .source.ruby {
+  color: #dc322f;
+}
+.source.ruby .string.interpolated .embedded.line.ruby .source.ruby {
+  color: #657b83;
+}
+.source.ruby .string.interpolated .embedded.line.ruby .source.ruby .punctuation.array,
+.source.ruby .string.interpolated .embedded.line.ruby .source.ruby .punctuation.function {
+  color: #657b83;
+}
+.source.ruby .support.function {
+  color: #657b83;
+}
+.source.ruby .support.function.kernel {
+  color: #859900;
+}
+.source.scala .variable {
+  color: #586e75;
+}
+.source.scala .declaration {
+  color: #586e75;
+  font-weight: bold;
+}
+.source.scala .comparison {
+  color: #586e75;
+}
+.source.scala .class,
+.source.scala .type {
+  color: #b58900;
+}
+.source.scala .val {
+  font-weight: normal;
+}
+.source.scala .variable {
+  font-weight: bold;
+}
+.source.scala .variable.parameter {
+  color: #6c71c4;
+  font-weight: normal;
+}
+.source.scala .control.flow {
+  color: #586e75;
+  font-weight: bold;
+}
+.source.scala .constant.language {
+  color: #586e75;
+  font-weight: bold;
+}
+.source.scala .function.declaration {
+  color: #6c71c4;
+}
+.source.scala .modifier.other {
+  font-weight: bold;
+}
+.source.scala .package {
+  color: #586e75;
+}
+.source.scala .variable.import {
+  font-weight: normal;
+}
+.source.scala .type .bounds,
+.source.scala .type .class {
+  color: #6c71c4;
+}
+.source.scala .documentation :not(.embedded).link.entity {
+  color: #268bd2;
+  text-decoration: underline;
+}
+.source.scala .documentation :not(.embedded) .class,
+.source.scala .documentation :not(.embedded) .parameter {
+  color: #586e75;
+}
+.source.scala .documentation :not(.embedded) .description {
+  color: #93a1a1;
+}
+.source.scala .embedded {
+  color: #374549;
+  font-style: italic;
+}
+.source.scala .embedded .margin,
+.source.scala .embedded .delimiters {
+  font-style: normal;
+}
+</style>
+  </head>
+  <body class='markdown-preview'><h5 id="-1dfs-">算法1DFS递归剪枝</h5>
+<h6 id="-">摘要</h6>
+<p> 算法是程序的核心，无关语言。适当的了解算法，可以帮你完成一些看似不可能完成的任务。递归能够把复杂问题简单化，有点类似于高中数学中的归纳推理法。DFS，深度优先搜索算法，是图论算法中的一种。DFS 就是一种暴力穷举法，把所有的情况都进行探索下，不遗漏也不重复。由于计算空间和时间的限制，有时候我们不需要穷举所有的情况，找到一种满足的条件，就可以终止，或者找到最优的情况就可以终止。</p>
+<h6 id="-">题目</h6>
+<p>第24题一马当先，来源于pythontip网站</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>下过象棋的人都知道，马只能走&#39;日&#39;字形（包括旋转90°的日），现在想象一下，给你一个n行m列网格棋盘，棋盘的左下角有一匹马，请你计算至少需要几步可以将它移动到棋盘的右上角，若无法走到，则输出-1.</span></span></span></div><div class="line"><span class="text plain"><span class="meta paragraph text"><span>如n=1，m=2,则至少需要1步；若n=1，m=3,则输出-1。</span></span></span></div></pre><h5 id="perl-">perl 代码</h5>
+<pre class="editor-colors lang-perl"><div class="line"><span class="source perl"><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>!/usr/bin/perl&nbsp;-w</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span class="keyword control perl"><span>use</span></span><span>&nbsp;strict;</span></span></div><div class="line"><span class="source perl"><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>&nbsp;设置棋盘大小&nbsp;8*8</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span class="storage modifier perl"><span>my</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>col_n</span></span><span>=8;</span></span></div><div class="line"><span class="source perl"><span class="storage modifier perl"><span>my</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>row_m</span></span><span>=8;</span></span></div><div class="line"><span class="source perl"><span class="storage modifier perl"><span>my</span></span><span>&nbsp;(</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>col_now</span></span><span>,</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>row_now</span></span><span>)=(0,0);</span></span></div><div class="line"><span class="source perl"><span>&nbsp;</span></span></div><div class="line"><span class="source perl"><span class="storage modifier perl"><span>my</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>@</span></span><span>step</span></span><span>;</span></span></div><div class="line"><span class="source perl"><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>DFS:一条路走到底的穷举法</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>refer:</span><span class="markup underline link http hyperlink"><span>http://baike.baidu.com/view/288277.htm</span></span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>step1&nbsp;产生一个矩阵表示棋谱</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span class="storage modifier perl"><span>my</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>@</span></span><span>chess</span></span><span>;</span></span></div><div class="line"><span class="source perl"><span class="keyword control perl"><span>for</span></span><span>&nbsp;</span><span class="storage modifier perl"><span>my</span></span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>key1</span></span><span>(0..</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>col_n</span></span><span>)</span></span></div><div class="line"><span class="source perl"><span>{</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span></span><span class="support function perl"><span>map</span></span><span>{</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>chess</span></span><span>[</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>key1</span></span><span>][</span><span class="variable other predefined perl"><span class="punctuation definition variable perl"><span>$</span></span><span>_</span></span><span>]=0}(0..</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>row_m</span></span><span>);</span></span></div><div class="line"><span class="source perl"><span class="punctuation whitespace comment leading perl"><span>&nbsp;&nbsp;</span></span><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>0代表没有走过，1代表走过&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span>}</span></span></div><div class="line"><span class="source perl"><span>&nbsp;</span></span></div><div class="line"><span class="source perl"><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>step2&nbsp;设置马的走法</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span class="storage modifier perl"><span>my</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>steps</span></span><span>=[</span></span></div><div class="line"><span class="source perl"><span>[2,1],[1,2],[-1,2],[-2,1],</span></span></div><div class="line"><span class="source perl"><span>[-2,-1],[-1,-2],[1,-2],[2,-1]</span></span></div><div class="line"><span class="source perl"><span>];</span></span></div><div class="line"><span class="source perl"><span>&nbsp;</span></span></div><div class="line"><span class="source perl"><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>step3&nbsp;设置全局变量，一条路走到底的变量</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>@chess也是全局变量</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span>&nbsp;</span></span></div><div class="line"><span class="source perl"><span class="storage modifier perl"><span>my</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>flag</span></span><span>=0;</span></span></div><div class="line"><span class="source perl"><span class="storage modifier perl"><span>my</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>step_num</span></span><span>=0;</span></span></div><div class="line"><span class="source perl"><span class="storage modifier perl"><span>my</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>minnum</span></span><span>=10000000;</span></span></div><div class="line"><span class="source perl"><span class="storage modifier perl"><span>my</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>@</span></span><span>paths</span></span><span>=();</span></span></div><div class="line"><span class="source perl"><span>go(</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>col_now</span></span><span>,</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>row_now</span></span><span>,</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>@</span></span><span>oldpaths</span></span><span>);</span></span></div><div class="line"><span class="source perl"><span class="support function perl"><span>print</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>flag</span></span><span>,</span><span class="string quoted double perl"><span class="punctuation definition string begin perl"><span>&quot;</span></span><span class="constant character escape perl"><span>\n</span></span><span class="punctuation definition string end perl"><span>&quot;</span></span></span><span>;</span></span></div><div class="line"><span class="source perl"><span class="support function perl"><span>print</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>minnum</span></span><span>,</span><span class="string quoted double perl"><span class="punctuation definition string begin perl"><span>&quot;</span></span><span class="constant character escape perl"><span>\n</span></span><span class="punctuation definition string end perl"><span>&quot;</span></span></span><span>;</span></span></div><div class="line"><span class="source perl"><span>&nbsp;</span></span></div><div class="line"><span class="source perl"><span class="meta function perl"><span class="storage type sub perl"><span>sub</span></span><span>&nbsp;</span><span class="entity name function perl"><span>go</span></span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span>{</span></span></div><div class="line"><span class="source perl"><span>&nbsp;&nbsp;&nbsp;</span><span class="storage modifier perl"><span>my</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>col_now</span></span><span>=</span><span class="support function perl"><span>shift</span></span><span>;</span></span></div><div class="line"><span class="source perl"><span>&nbsp;&nbsp;&nbsp;</span><span class="storage modifier perl"><span>my</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>row_now</span></span><span>=</span><span class="support function perl"><span>shift</span></span><span>;</span></span></div><div class="line"><span class="source perl"><span class="punctuation whitespace comment leading perl"><span>&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>把走过的地方添加到路径中</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span>&nbsp;&nbsp;&nbsp;</span><span class="support function perl"><span>push</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>@</span></span><span>paths</span></span><span>,</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>col_now</span></span><span>,</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>row_now</span></span><span>;</span></span></div><div class="line"><span class="source perl"><span>&nbsp;</span></span></div><div class="line"><span class="source perl"><span>&nbsp;&nbsp;&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>chess</span></span><span>[</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>col_now</span></span><span>][</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>row_now</span></span><span>]=1;&nbsp;</span><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>访问过了的标志</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span>&nbsp;</span></span></div><div class="line"><span class="source perl"><span>&nbsp;&nbsp;&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>step_num</span></span><span>++;</span></span></div><div class="line"><span class="source perl"><span class="punctuation whitespace comment leading perl"><span>&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>实现剪枝，如果step_num&nbsp;比已有的minnum&nbsp;要大就不要探索了。</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span>&nbsp;&nbsp;&nbsp;</span><span class="keyword control perl"><span>if</span></span><span>(</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>step_num</span></span><span>&nbsp;&gt;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>minnum</span></span><span>)</span></span></div><div class="line"><span class="source perl"><span>&nbsp;&nbsp;&nbsp;{</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;&nbsp;</span></span><span class="keyword control perl"><span>return</span></span></span></div><div class="line"><span class="source perl"><span>&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="source perl"><span>&nbsp;&nbsp;&nbsp;</span><span class="keyword control perl"><span>if</span></span><span>(</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>col_now</span></span><span>==</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>col_n</span></span><span>&nbsp;</span><span class="keyword operator logical perl"><span>and</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>row_now</span></span><span>==</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>row_m</span></span><span>)&nbsp;</span><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>判断这条路是否走成功</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span>&nbsp;&nbsp;&nbsp;{</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;&nbsp;</span></span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>flag</span></span><span>=1;</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;&nbsp;</span></span><span class="support function perl"><span>print</span></span><span>&nbsp;</span><span class="string quoted double perl"><span class="punctuation definition string begin perl"><span>&quot;</span></span><span>success</span><span class="constant character escape perl"><span>\n</span></span><span>,you&nbsp;have&nbsp;access&nbsp;the&nbsp;destination</span><span class="constant character escape perl"><span>\n</span></span><span class="punctuation definition string end perl"><span>&quot;</span></span></span><span>;</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;&nbsp;</span></span><span class="support function perl"><span>print</span></span><span>&nbsp;</span><span class="string quoted double perl"><span class="punctuation definition string begin perl"><span>&quot;</span></span><span>paths:</span><span class="punctuation definition string end perl"><span>&quot;</span></span></span><span>;</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;&nbsp;</span></span><span class="support function perl"><span>print</span></span><span>&nbsp;</span><span class="support function perl"><span>join</span></span><span>&nbsp;</span><span class="string quoted double perl"><span class="punctuation definition string begin perl"><span>&quot;</span></span><span>,</span><span class="punctuation definition string end perl"><span>&quot;</span></span></span><span>,</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>@</span></span><span>paths</span></span><span>;</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;&nbsp;</span></span><span class="support function perl"><span>print</span></span><span>&nbsp;</span><span class="string quoted double perl"><span class="punctuation definition string begin perl"><span>&quot;</span></span><span class="constant character escape perl"><span>\n</span></span><span class="punctuation definition string end perl"><span>&quot;</span></span></span><span>;</span></span></div><div class="line"><span class="source perl"><span>&nbsp;</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;&nbsp;</span></span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>minnum</span></span><span>=</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>minnum</span></span><span>&lt;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>step_num</span></span><span>?</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>minnum</span></span><span>:</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>step_num</span></span><span>;</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;&nbsp;</span></span><span class="keyword control perl"><span>return</span></span><span>&nbsp;1;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span></div><div class="line"><span class="source perl"><span>&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="source perl"><span class="punctuation whitespace comment leading perl"><span>&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>下一步可能的走法</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span>&nbsp;&nbsp;&nbsp;</span><span class="keyword control perl"><span>for</span></span><span>&nbsp;</span><span class="storage modifier perl"><span>my</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>step</span></span><span>(</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>@</span></span><span>$steps</span></span><span>)</span></span></div><div class="line"><span class="source perl"><span>&nbsp;&nbsp;&nbsp;{</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;</span></span><span class="storage modifier perl"><span>my</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>col_new</span></span><span>=</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>col_now</span></span><span>+</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>step</span></span><span class="keyword operator comparison perl"><span>-&gt;</span></span><span>[0];</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;</span></span><span class="storage modifier perl"><span>my</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>row_new</span></span><span>=</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>row_now</span></span><span>+</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>step</span></span><span class="keyword operator comparison perl"><span>-&gt;</span></span><span>[1];</span></span></div><div class="line"><span class="source perl"><span class="punctuation whitespace comment leading perl"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>print&nbsp;&quot;$col_new&nbsp;&nbsp;$row_new\n&quot;;</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;</span></span><span class="keyword control perl"><span>if</span></span><span>(</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>col_new</span></span><span>&gt;0&nbsp;</span><span class="keyword operator logical perl"><span>and</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>col_new</span></span><span>&lt;=&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>col_n</span></span><span>&nbsp;</span><span class="keyword operator logical perl"><span>and</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>row_new</span></span><span>&gt;0&nbsp;</span><span class="keyword operator logical perl"><span>and</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>row_new</span></span><span>&lt;=</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>row_m</span></span><span>)</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;</span></span><span>{</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;</span></span><span class="keyword control perl"><span>if</span></span><span>(</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>chess</span></span><span>[</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>col_new</span></span><span>][</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>row_new</span></span><span>]==0)</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;</span></span><span>{</span></span></div><div class="line"><span class="source perl"><span class="punctuation whitespace comment leading perl"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>&nbsp;print&nbsp;&quot;&nbsp;goto&nbsp;$col_new&nbsp;&nbsp;$row_new\n&quot;;</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span class="punctuation whitespace comment leading perl"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>递归&nbsp;走下一步</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;&nbsp;</span></span><span>go(</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>col_new</span></span><span>,</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>row_new</span></span><span>,</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>@</span></span><span>newpaths</span></span><span>);</span></span></div><div class="line"><span class="source perl"><span class="punctuation whitespace comment leading perl"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>关键&nbsp;回复全局变量</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span class="punctuation whitespace comment leading perl"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>pop&nbsp;shift</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;</span></span><span class="support function perl"><span>pop</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>@</span></span><span>paths</span></span><span>;</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;</span></span><span class="support function perl"><span>pop</span></span><span>&nbsp;</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>@</span></span><span>paths</span></span><span>;</span></span></div><div class="line"><span class="source perl"><span class="punctuation whitespace comment leading perl"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>&nbsp;print&nbsp;join&nbsp;&quot;,&quot;,@paths;</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span class="punctuation whitespace comment leading perl"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="comment line number-sign perl"><span class="punctuation definition comment perl"><span>#</span></span><span>&nbsp;&nbsp;print&nbsp;&quot;\n&quot;;</span><span>&nbsp;</span></span></span></div><div class="line"><span class="source perl"><span>&nbsp;</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;&nbsp;</span></span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>step_num</span></span><span>--;</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;&nbsp;</span></span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>chess</span></span><span>[</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>col_new</span></span><span>][</span><span class="variable other readwrite global perl"><span class="punctuation definition variable perl"><span>$</span></span><span>row_new</span></span><span>]=0;</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span>&nbsp;&nbsp;</span></span><span>}</span></span></div><div class="line"><span class="source perl"><span class="meta leading-tabs"><span class="meta odd-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span><span class="meta even-tab"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span></span></span><span>}</span></span></div><div class="line"><span class="source perl"><span>&nbsp;</span></span></div><div class="line"><span class="source perl"><span>&nbsp;&nbsp;&nbsp;}</span></span></div><div class="line"><span class="source perl"><span>&nbsp;</span></span></div><div class="line"><span class="source perl"><span>&nbsp;</span></span></div><div class="line"><span class="source perl"><span>}</span></span></div><div class="line"><span class="source perl"><span class="constant language perl"><span>__END__</span></span><span>&nbsp;</span></span></div></pre>
+<h5 id="-">代码剖析</h5>
+<ul>
+<li>step1 产生一个数组矩阵表示棋谱</li>
+<li>step2 设置马的走法</li>
+<li>step3  设置一条路走到底的全局变量
+递归循环中的处理</li>
+<li>step4 判断是否成功</li>
+<li>step5  剪枝</li>
+<li>step6 不停的走向下一步，一直走到底。</li>
+<li>step7 走到底，恢复全局变量状态</li>
+</ul>
+<p>核心是第7步，稍微想想整个模型，就可以了。</p>
+<h6 id="-">废话 留到最后</h6>
+<p> 最近一直没有给大家推送一些perl知识。最主要原因，没有找到值得推送的内容。另外在这段时间里，看了一些python模块，一些c++,一些c。在化学信息领域，目前python的模块比perl的模块多的多，比如RDKIT,openbabel,pybel,pymol,而perl里面只有2个，一个是功能有限的HackaMol。一个是没有人维护的PerlMol。</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span>perlgeek=&#39;Search&nbsp;metacpan&#39;?用这个模块:移植一个模块</span></span></span></div></pre><p>c++ 中的class 我觉得是最经典的，好多用法也接近于动态语言，值得学习，推荐<c++ primer="" plus="">。 C的代码中，数据结构都是通过指针进行管理的，首先我知道用多大内存，然后分配内存，然后在存放数据。c中虽然只有struct，没有class，通过对指针的熟练使用，进行布局组织代码。不管python还是perl好多模块的底层仍然是c代码，所以c,不得不学。</c++></p>
+<h6 id="-">末尾</h6>
+<p> 如果你觉得perl没什么好学的，推荐你看&lt;&lt;高阶perl&gt;&gt;这本书。第一章就是递归与回调。</p></body>
+</html>
