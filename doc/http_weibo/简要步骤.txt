@@ -1,0 +1,41 @@
+### 工具
+- firefox
+- chrome
+- HttpFox(firefox 插件)
+- CM (firefox 插件)
+
+### step1 定位地址
+1.https://rate.tmall.com/list_detail_rate.htm?itemId=525028801160&spuId=463675721&sellerId=653974403&order=3&currentPage=1&append=0&content=1&tagId=&posi=&picture=&ua=170UW5TcyMNYQwiAiwTR3tCf0J%2FQnhEcUpkMmQ%3D|Um5OcktwRX9GfktwRXxDfSs%3D|U2xMHDJ%2BH2QJZwBxX39Rb1p0VHomRyFNKlQuAFYA|VGhXd1llXGdSaFFpXGdSa1RqXWBCfEN5Rn5Cd0N4R3pCeU12Q3pUAg%3D%3D|VWldfS0TMwgzDy8aOhQqR3JUaVdoUX8pfw%3D%3D|VmhIGCQcIQE8HCAfJBo6BD4KMREtEicaOgY7BD0dIR4rFjYCNw5YDg%3D%3D|V25OHjAePgc8ASEeJhMzDzsHOG44|WGFBET8RMQ4xCioVLBU1DTkFP2k%2F|WWBAED5%2BKmkMYytMK1Y2GDgBPQgoEyYbOwA5BDttOw%3D%3D|WmNDEz0TMws1CSkQKBAwCjULNmA2|W2JCEjwSMgs2AiIeIxskBDEKMAVTBQ%3D%3D|XGREFDoUNGRaYF19SXxGZlhnX31FZV1oSHRJfV1hWgwsETEfMRElGC0WQBY%3D|XWRZZER5WWZGekN%2FX2FZY0N6WmZbe09vWnpAYFt7R34o&isg=AoaGbWLyLRqEDfl-mhRtxWVd1HxSI8qhydvcIHCvnamPcyeN2HZosVMBPSJs&needFold=0&_ksTS=1468745879901_1576&callback=jsonp1577
+### step2 拆分参数
+- itemId=525028801160
+- spuId=463675721
+- sellerId=653974403 
+- order=3
+- currentPage=1
+- append=0
+- ontent=1&tagId=&posi=&picture=
+- &ua=170UW5TcyM4o
+- &isg=AoaGbWLyLRqEDfl-mhRtxWVd1HxSI8qhydvcIHCvnamPcyeN2HZosVMBPSJs&needFold=0
+- &_ksTS=1468745879901_1576
+- &callback=jsonp1577
+### step3 简单寻找参数
+- itemId 商品号码，已经知道的。
+- spuId=463675721
+- sellerId=653974403 
+- order=3
+- currentPage=1
+- append=0
+- ontent=1&tagId=&posi=&picture=
+- &ua=170UW5TcyM4o
+- &isg=AoaGbWLyLRqEDfl-mhRtxWVd1HxSI8qhydvcIHCvnamPcyeN2HZosVMBPSJs&needFold=0
+- &_ksTS=1468745879901_1576
+- &callback=jsonp1577
+### step4 访问网址 https://detail.tmall.com/item.htm?id=525028801160
+### step5 商品评价链接的发起者是index.js
+
+### step 5 http://a.m.tmall.com/ajax/rate_list.do?item_id=530140074471
+
+
+
+### refer
+http://livezingy.com/actionlog_js_ua-js-main-flow/

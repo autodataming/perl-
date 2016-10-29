@@ -1,0 +1,1 @@
+getattr(object,name,default)---如果存在name属性（方法）则返回name的值（方法地址）否则返回default值。//perl   INVOCANT->can
